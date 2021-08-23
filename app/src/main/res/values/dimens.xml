@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="normal_space">16dp</dimen>
+    <dimen name="medium_space">24dp</dimen>
+    <dimen name="big_space">32dp</dimen>
+    <dimen name="normal_text">20sp</dimen>
+    <dimen name="medium_text">24sp</dimen>
+    <dimen name="big_text">28sp</dimen>
+    <dimen name="verybig_text">40sp</dimen>
+    <dimen name="small_text">16sp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+</resources>
