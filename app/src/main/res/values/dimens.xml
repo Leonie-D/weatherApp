@@ -2,6 +2,7 @@
     <dimen name="normal_space">16dp</dimen>
     <dimen name="medium_space">24dp</dimen>
     <dimen name="big_space">32dp</dimen>
+    <dimen name="small_space">8dp</dimen>
     <dimen name="normal_text">20sp</dimen>
     <dimen name="medium_text">24sp</dimen>
     <dimen name="big_text">28sp</dimen>

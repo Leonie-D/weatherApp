@@ -17,4 +17,7 @@
 
     <string name="no_connection">No internet connexion</string>
     <string name="title_activity_favourites">My favorites</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

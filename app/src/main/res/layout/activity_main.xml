@@ -7,6 +7,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/image_view_refresh_btn"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/ic_baseline_refresh_24"
+        app:tint="@color/white"
+        android:background="@drawable/round_button"
+        android:padding="12dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/normal_space"
+        android:onClick="onRefreshBtnClick" />
+
     <LinearLayout
         android:id="@+id/linear_layout_main"
         android:layout_width="match_parent"
@@ -60,11 +72,13 @@
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_baseline_favorite_24"
-        android:drawableTint="@color/white"
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/ic_baseline_favorite_24"
+        app:tint="@color/white"
+        android:background="@drawable/round_button"
+        android:padding="12dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
