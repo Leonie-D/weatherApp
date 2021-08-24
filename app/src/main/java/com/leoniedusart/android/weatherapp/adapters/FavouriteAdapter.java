@@ -66,7 +66,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
             mTextViewCityDesc = itemView.findViewById(R.id.text_view_city_desc);
             mTextViewCityTemp = itemView.findViewById(R.id.text_view_city_temp);
             mImageViewIcon = itemView.findViewById(R.id.image_view_icon);
-            itemView.setOnLongClickListener(this);
+            //itemView.setOnLongClickListener(this);
         }
 
         @Override

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import com.leoniedusart.android.weatherapp.adapters.FavouriteAdapter;
 import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     private Context mContext;
@@ -58,11 +60,15 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
         mRecyclerViewFavourites.setAdapter(mAdapter);
 
         // Swipe
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT){
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN|ItemTouchHelper.UP, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT){
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
+                int fromPosition = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
+                int toPosition = ((FavouriteAdapter.ViewHolder) target).getBindingAdapterPosition();
+                Collections.swap(mCities, fromPosition, toPosition);
+                mAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
             }
 
             @Override
