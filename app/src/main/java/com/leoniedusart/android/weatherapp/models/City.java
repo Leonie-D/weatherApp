@@ -1,5 +1,10 @@
 package com.leoniedusart.android.weatherapp.models;
 
+import com.leoniedusart.android.weatherapp.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class City {
     private final String mName;
     private final String mDesc;
@@ -11,6 +16,23 @@ public class City {
         this.mDesc = mDesc;
         this.mTemp = mTemp;
         this.mWeatherIcon = mWeatherIcon;
+    }
+
+    public City(String stringJson) throws JSONException {
+        JSONObject json = new JSONObject(stringJson);
+        mName = json.getString("name");
+        mDesc = json.getJSONArray("weather").getJSONObject(0).getString("description");
+        mTemp = String.format("%d°C", Math.round(json.getJSONObject("main").getDouble("temp")));
+        switch (json.getJSONArray("weather").getJSONObject(0).getString("main")) {
+            case "Clear":
+                mWeatherIcon = R.drawable.ic_sun;
+                break;
+            case "Clouds":
+                mWeatherIcon = R.drawable.ic_cloud;
+                break;
+            default:
+                mWeatherIcon = R.drawable.ic_cloudy;
+        }
     }
 
     public String getmName() {
