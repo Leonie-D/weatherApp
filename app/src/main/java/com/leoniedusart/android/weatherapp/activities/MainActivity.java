@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.models.City;
+import com.leoniedusart.android.weatherapp.utils.CityAPI;
 import com.leoniedusart.android.weatherapp.utils.DataKeys;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +37,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CityAPI {
 
     private Context mContext;
     private LinearLayout mLinearLayoutMain;
@@ -45,11 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextViewCityTemp;
     private ImageView mImageViewCityIcon;
     private ImageView mImageViewRefreshBtn;
-    private OkHttpClient mOkHttpClient;
-    private Handler mHandler;
     private static final double lat = 40.716709;
     private static final double lon = -74.005698;
-    private static final String apikey = "0de3404ffb4014065996f62bf2434b39";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,30 +67,7 @@ public class MainActivity extends AppCompatActivity {
             mImageViewRefreshBtn.setVisibility(View.INVISIBLE);
             mLinearLayoutMain.setVisibility(View.VISIBLE);
 
-            mOkHttpClient = new OkHttpClient();
-            mHandler = new Handler();
-            Request request = new Request.Builder().url(String.format("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=fr&appid=%s", lat, lon, apikey)).build();
-            mOkHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    alertUser(mContext, R.string.pb);
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if(response.isSuccessful()) {
-                        final String stringJson = response.body().string();
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                renderCurrentWeather(stringJson);
-                            }
-                        });
-                    } else {
-                        alertUser(mContext, R.string.pb);
-                    }
-                }
-            });
+            apiCall(mContext, getUrl(lat, lon));
         }
         else
         {
@@ -113,33 +88,26 @@ public class MainActivity extends AppCompatActivity {
         this.recreate();
     }
 
-    private void alertUser(Context context, int message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(message);
-        builder.setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-        builder.create().show();
-    }
-
-    private void renderCurrentWeather(String stringJson)
-    {
+    @Override
+    public void onSuccess(String stringJson) {
         try {
             City city = new City(stringJson);
-            mTextViewCityName = findViewById(R.id.text_view_city_name);
-            mTextViewCityName.setText(city.getmName());
-            mTextViewCityDesc = findViewById(R.id.text_view_city_desc);
-            mTextViewCityDesc.setText(city.getmDesc());
-            mTextViewCityTemp = findViewById(R.id.text_view_city_temp);
-            mTextViewCityTemp.setText(city.getmTemp());
-            mImageViewCityIcon = findViewById(R.id.image_view_icon);
-            Drawable icon = ResourcesCompat.getDrawable(mContext.getResources(), city.getmWeatherIcon(), mContext.getTheme());
-            mImageViewCityIcon.setImageDrawable(icon);
+            renderCurrentWeather(city);
         } catch (JSONException e) {
             alertUser(mContext, R.string.pb);
         }
+    }
+
+    private void renderCurrentWeather(City city)
+    {
+        mTextViewCityName = findViewById(R.id.text_view_city_name);
+        mTextViewCityName.setText(city.getmName());
+        mTextViewCityDesc = findViewById(R.id.text_view_city_desc);
+        mTextViewCityDesc.setText(city.getmDesc());
+        mTextViewCityTemp = findViewById(R.id.text_view_city_temp);
+        mTextViewCityTemp.setText(city.getmTemp());
+        mImageViewCityIcon = findViewById(R.id.image_view_icon);
+        Drawable icon = ResourcesCompat.getDrawable(mContext.getResources(), city.getmWeatherIcon(), mContext.getTheme());
+        mImageViewCityIcon.setImageDrawable(icon);
     }
 }

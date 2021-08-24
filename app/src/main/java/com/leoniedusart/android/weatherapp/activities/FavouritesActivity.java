@@ -28,6 +28,7 @@ import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.adapters.FavouriteAdapter;
 import com.leoniedusart.android.weatherapp.databinding.ActivityFavouritesBinding;
 import com.leoniedusart.android.weatherapp.models.City;
+import com.leoniedusart.android.weatherapp.utils.CityAPI;
 import com.leoniedusart.android.weatherapp.utils.DataKeys;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,18 +42,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class FavouritesActivity extends AppCompatActivity {
+public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     private Context mContext;
-    private Toolbar toolbar;
-    private CollapsingToolbarLayout toolBarLayout;
-    private FloatingActionButton fab;
+    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mToolBarLayout;
+    private FloatingActionButton mFab;
     private ArrayList<City> mCities;
     private City mCityRemoved;
     private RecyclerView mRecyclerViewFavourites;
     FavouriteAdapter mAdapter;
-    private OkHttpClient mOkHttpClient;
-    private Handler mHandler;
-    private static final String apikey = "0de3404ffb4014065996f62bf2434b39";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +59,10 @@ public class FavouritesActivity extends AppCompatActivity {
 
         mContext = this;
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolBarLayout = findViewById(R.id.toolbar_layout);
-        toolBarLayout.setTitle(getTitle());
+        mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolBarLayout = findViewById(R.id.toolbar_layout);
+        mToolBarLayout.setTitle(getTitle());
 
         mRecyclerViewFavourites = findViewById(R.id.recycler_view_favourites_list);
 
@@ -100,8 +98,8 @@ public class FavouritesActivity extends AppCompatActivity {
         });
         itemTouchHelper.attachToRecyclerView(mRecyclerViewFavourites);
 
-        fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -114,35 +112,7 @@ public class FavouritesActivity extends AppCompatActivity {
 
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mOkHttpClient = new OkHttpClient();
-                        mHandler = new Handler();
-                        Request request = new Request.Builder().url(String.format("http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=fr&appid=%s", editTextAddFavourite.getText().toString(), apikey)).build();
-                        mOkHttpClient.newCall(request).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-                                alertUser(mContext, R.string.pb);
-                            }
-
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                if(response.isSuccessful()) {
-                                    final String stringJson = response.body().string();
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            addFavourite(stringJson);
-                                        }
-                                    });
-                                } else {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            alertUser(mContext, R.string.notfound);
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        apiCall(mContext, getUrl(editTextAddFavourite.getText().toString()));
                     }
                 });
 
@@ -157,20 +127,8 @@ public class FavouritesActivity extends AppCompatActivity {
         });
     }
 
-    private void alertUser(Context context, int message) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-        builder.setTitle(message);
-        builder.setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-        builder.create().show();
-    }
-
-    private void addFavourite(String stringJson)
-    {
+    @Override
+    public void onSuccess(String stringJson) {
         try {
             City city = new City(stringJson);
             mCities.add(city); // todo : check if not already in list

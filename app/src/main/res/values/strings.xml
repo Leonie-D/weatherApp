@@ -18,5 +18,6 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="pb">Something went wrong, please try again</string>
+    <string name="no_internet">No connexion, please retry</string>
     <string name="notfound">City not found, please try again</string>
 </resources>

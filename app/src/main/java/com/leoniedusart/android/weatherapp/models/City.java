@@ -30,6 +30,9 @@ public class City {
             case "Clouds":
                 mWeatherIcon = R.drawable.ic_cloud;
                 break;
+            case "Rain":
+                mWeatherIcon = R.drawable.ic_rainy;
+                break;
             default:
                 mWeatherIcon = R.drawable.ic_cloudy;
         }
