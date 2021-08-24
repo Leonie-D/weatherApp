@@ -3,19 +3,13 @@ package com.leoniedusart.android.weatherapp.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,18 +18,8 @@ import android.widget.Toast;
 import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
-import com.leoniedusart.android.weatherapp.utils.DataKeys;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements CityAPI {
 

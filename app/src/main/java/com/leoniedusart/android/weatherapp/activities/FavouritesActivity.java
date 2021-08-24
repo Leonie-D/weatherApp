@@ -1,6 +1,5 @@
 package com.leoniedusart.android.weatherapp.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -17,30 +16,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.adapters.FavouriteAdapter;
-import com.leoniedusart.android.weatherapp.databinding.ActivityFavouritesBinding;
 import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
-import com.leoniedusart.android.weatherapp.utils.DataKeys;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     private Context mContext;
@@ -64,15 +48,16 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
         mToolBarLayout = findViewById(R.id.toolbar_layout);
         mToolBarLayout.setTitle(getTitle());
 
+        // RecyclerView
         mRecyclerViewFavourites = findViewById(R.id.recycler_view_favourites_list);
-
         mCities = new ArrayList<>();
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerViewFavourites.setLayoutManager(layoutManager);
         mAdapter = new FavouriteAdapter(mContext, mCities);
         mRecyclerViewFavourites.setAdapter(mAdapter);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT){
+
+        // Swipe
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT){
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -81,19 +66,28 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
-                mCityRemoved = mCities.get(position);
-                mCities.remove(position);
-                mAdapter.notifyDataSetChanged();
-                Snackbar.make(findViewById(R.id.coordinator_layout), String.format("%s a été supprimée.", mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
-                        .setAction(R.string.cancel, new View.OnClickListener(){
-                            @Override
-                            public void onClick(View view) {
-                                mCities.add(position, mCityRemoved);
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        })
-                        .show();
+                switch(direction) {
+                    case ItemTouchHelper.LEFT:
+                        int position = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
+                        mCityRemoved = mCities.get(position);
+                        mCities.remove(position);
+                        mAdapter.notifyDataSetChanged();
+                        Snackbar.make(findViewById(R.id.coordinator_layout), String.format("%s a été supprimée.", mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
+                                .setAction(R.string.cancel, new View.OnClickListener(){
+                                    @Override
+                                    public void onClick(View view) {
+                                        mCities.add(position, mCityRemoved);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .show();
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        mAdapter.notifyDataSetChanged();
+                        Snackbar.make(findViewById(R.id.coordinator_layout), "L'autre gauche...", Snackbar.LENGTH_SHORT)
+                                .show();
+                        break;
+                }
             }
         });
         itemTouchHelper.attachToRecyclerView(mRecyclerViewFavourites);
