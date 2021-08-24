@@ -24,17 +24,19 @@ public class City {
         mDesc = json.getJSONArray("weather").getJSONObject(0).getString("description");
         mTemp = String.format("%d°C", Math.round(json.getJSONObject("main").getDouble("temp")));
         switch (json.getJSONArray("weather").getJSONObject(0).getString("main")) {
-            case "Clear":
-                mWeatherIcon = R.drawable.ic_sun;
-                break;
             case "Clouds":
-                mWeatherIcon = R.drawable.ic_cloud;
+                if(mDesc.equals("peu nuageux")) {
+                    mWeatherIcon = R.drawable.ic_cloudy;
+                } else {
+                    mWeatherIcon = R.drawable.ic_cloud;
+                }
                 break;
             case "Rain":
                 mWeatherIcon = R.drawable.ic_rainy;
                 break;
+            case "Clear":
             default:
-                mWeatherIcon = R.drawable.ic_cloudy;
+                mWeatherIcon = R.drawable.ic_sun;
         }
     }
 
