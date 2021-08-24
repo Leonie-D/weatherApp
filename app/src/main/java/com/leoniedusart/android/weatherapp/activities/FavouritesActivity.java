@@ -111,11 +111,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                     }
                 });
 
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
+                builder.setNegativeButton(R.string.cancel, null);
 
                 builder.create().show();
             }

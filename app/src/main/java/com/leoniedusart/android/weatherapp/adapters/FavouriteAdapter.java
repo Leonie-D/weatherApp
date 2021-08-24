@@ -82,11 +82,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
                 }
             });
 
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-
-                }
-            });
+            builder.setNegativeButton(R.string.cancel, null);
 
             builder.create().show();
             return true;
