@@ -2,6 +2,7 @@ package com.leoniedusart.android.weatherapp.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -125,8 +126,14 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     public void onSuccess(String stringJson) {
         try {
             City city = new City(stringJson);
-            mCities.add(city); // todo : check if not already in list
-            mAdapter.notifyDataSetChanged();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mCities.stream().anyMatch(c -> c.getmName().equals(city.getmName()))) {
+                alertUser(mContext, R.string.already_added);
+            }
+            else
+            {
+                mCities.add(city);
+                mAdapter.notifyDataSetChanged();
+            }
         } catch(Exception e)
         {
             alertUser(mContext, R.string.pb);

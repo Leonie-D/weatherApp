@@ -21,4 +21,5 @@
     <string name="pb">Une erreur est survenue, veuillez réessayer</string>
     <string name="no_internet">Pas de connexion internet</string>
     <string name="notfound">Ville inconnue, veuillez réessayer avec une autre orthographe</string>
+    <string name="already_added">Cette ville fait déjà partie de vos favoris</string>
 </resources>
