@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,14 @@ import com.leoniedusart.android.weatherapp.databinding.ActivityFavouritesBinding
 import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.utils.DataKeys;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class FavouritesActivity extends AppCompatActivity {
     private Context mContext;
@@ -36,6 +44,10 @@ public class FavouritesActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private ArrayList<City> mCities;
     private RecyclerView mRecyclerViewFavourites;
+    FavouriteAdapter mAdapter;
+    private OkHttpClient mOkHttpClient;
+    private Handler mHandler;
+    private static final String apikey = "0de3404ffb4014065996f62bf2434b39";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +64,10 @@ public class FavouritesActivity extends AppCompatActivity {
         mRecyclerViewFavourites = findViewById(R.id.recycler_view_favourites_list);
 
         mCities = new ArrayList<>();
-        City city1 = new City("Montréal", "Légères pluies", "22°C", R.drawable.ic_rainy);
-        City city2 = new City("New York", "Ensolleillé", "22°C", R.drawable.ic_sun);
-        City city3 = new City("Paris", "Nuageux", "24°C", R.drawable.ic_cloudy);
-        City city4 = new City("Toulouse", "Pluies modérées", "20°C", R.drawable.ic_rainy);
-
-        mCities.add(city1);
-        mCities.add(city2);
-        mCities.add(city3);
-        mCities.add(city4);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerViewFavourites.setLayoutManager(layoutManager);
-        FavouriteAdapter mAdapter = new FavouriteAdapter(mContext, mCities);
+        mAdapter = new FavouriteAdapter(mContext, mCities);
         mRecyclerViewFavourites.setAdapter(mAdapter);
 
         fab = findViewById(R.id.fab);
@@ -81,8 +84,35 @@ public class FavouritesActivity extends AppCompatActivity {
 
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mCities.add(new City(editTextAddFavourite.getText().toString(), "Nuageux", "18°C", R.drawable.ic_cloud));
-                        mAdapter.notifyDataSetChanged();
+                        mOkHttpClient = new OkHttpClient();
+                        mHandler = new Handler();
+                        Request request = new Request.Builder().url(String.format("http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=fr&appid=%s", editTextAddFavourite.getText().toString(), apikey)).build();
+                        mOkHttpClient.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                alertUser(mContext, R.string.pb);
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                if(response.isSuccessful()) {
+                                    final String stringJson = response.body().string();
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            addFavourite(stringJson);
+                                        }
+                                    });
+                                } else {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            alertUser(mContext, R.string.notfound);
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
 
@@ -95,5 +125,29 @@ public class FavouritesActivity extends AppCompatActivity {
                 builder.create().show();
             }
         });
+    }
+
+    private void alertUser(Context context, int message) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setTitle(message);
+        builder.setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void addFavourite(String stringJson)
+    {
+        try {
+            City city = new City(stringJson);
+            mCities.add(city); // todo : check if not already in list
+            mAdapter.notifyDataSetChanged();
+        } catch(Exception e)
+        {
+            alertUser(mContext, R.string.pb);
+        }
     }
 }

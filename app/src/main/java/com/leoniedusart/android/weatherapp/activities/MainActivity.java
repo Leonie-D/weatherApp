@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ((Activity)context).finish();
+
                     }
                 });
         builder.create().show();
