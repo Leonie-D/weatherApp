@@ -41,6 +41,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     public void onBindViewHolder(FavouriteAdapter.ViewHolder holder, int position) {
         City city = mCities.get(position);
         holder.mCityPosition = position;
+        holder.mTextViewCityId.setText(String.valueOf(city.getmApiID()));
         holder.mTextViewCityName.setText(city.getmName());
         holder.mTextViewCityDesc.setText(city.getmDesc());
         holder.mTextViewCityTemp.setText(city.getmTemp());
@@ -54,6 +55,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+        public TextView mTextViewCityId;
         public TextView mTextViewCityName;
         public TextView mTextViewCityDesc;
         public TextView mTextViewCityTemp;
@@ -62,6 +64,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
 
         public ViewHolder(View itemView) {
             super(itemView);
+            mTextViewCityId = itemView.findViewById(R.id.text_view_api_id);
             mTextViewCityName = itemView.findViewById(R.id.text_view_city_name);
             mTextViewCityDesc = itemView.findViewById(R.id.text_view_city_desc);
             mTextViewCityTemp = itemView.findViewById(R.id.text_view_city_temp);
@@ -69,6 +72,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
             //itemView.setOnLongClickListener(this);
         }
 
+        // méthode non utilisée donc non mise à jour (n'utilise pas la BdD)
         @Override
         public boolean onLongClick(View view) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

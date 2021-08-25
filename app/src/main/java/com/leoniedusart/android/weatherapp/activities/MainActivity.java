@@ -51,7 +51,7 @@ public class  MainActivity extends AppCompatActivity implements CityAPI {
             mImageViewRefreshBtn.setVisibility(View.INVISIBLE);
             mLinearLayoutMain.setVisibility(View.VISIBLE);
 
-            apiCall(mContext, getUrl(lat, lon));
+            apiCall(mContext, getUrl(lat, lon), false);
         }
         else
         {
@@ -73,7 +73,7 @@ public class  MainActivity extends AppCompatActivity implements CityAPI {
     }
 
     @Override
-    public void onSuccess(String stringJson) {
+    public void onSuccess(String stringJson, boolean init) {
         try {
             City city = new City(stringJson);
             renderCurrentWeather(city);

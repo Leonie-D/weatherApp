@@ -26,6 +26,10 @@ public interface CityAPI {
     String apiKey = "0de3404ffb4014065996f62bf2434b39";
     String lang = Locale.getDefault().getLanguage();
 
+    default String getUrl(int cityId) {
+        return String.format("https://api.openweathermap.org/data/2.5/weather?id=%d&units=metric&lang=%s&appid=%s", cityId, lang, apiKey);
+    }
+
     default String getUrl(String cityName) {
         return String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=%s&appid=%s", cityName, lang, apiKey);
     }
@@ -34,7 +38,7 @@ public interface CityAPI {
         return String.format("https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=%s&appid=%s", cityLat, cityLon, lang, apiKey);
     }
 
-    default void apiCall(Context context, String url) {
+    default void apiCall(Context context, String url, boolean init) {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -54,7 +58,7 @@ public interface CityAPI {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                onSuccess(stringJson);
+                                onSuccess(stringJson, init);
                             }
                         });
                     } else {
@@ -75,14 +79,9 @@ public interface CityAPI {
     default void alertUser(Context context, int message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(message);
-        builder.setPositiveButton(R.string.ok,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // juste close alert
-                    }
-                });
+        builder.setPositiveButton(R.string.ok, null);
         builder.create().show();
     }
 
-    void onSuccess(String stringJson);
+    void onSuccess(String stringJson, boolean init);
 }

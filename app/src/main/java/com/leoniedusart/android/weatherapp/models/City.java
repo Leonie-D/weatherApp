@@ -6,12 +6,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class City {
+    private final int mApiID;
     private final String mName;
     private final String mDesc;
     private final String mTemp;
     private final int mWeatherIcon;
 
-    public City(String mName, String mDesc, String mTemp, int mWeatherIcon) {
+    public City(int mApiId, String mName, String mDesc, String mTemp, int mWeatherIcon) {
+        this.mApiID = mApiId;
         this.mName = mName;
         this.mDesc = mDesc;
         this.mTemp = mTemp;
@@ -20,6 +22,7 @@ public class City {
 
     public City(String stringJson) throws JSONException {
         JSONObject json = new JSONObject(stringJson);
+        mApiID = json.getInt("id");
         mName = json.getString("name");
         mDesc = json.getJSONArray("weather").getJSONObject(0).getString("description");
         mTemp = String.format("%d°C", Math.round(json.getJSONObject("main").getDouble("temp")));
@@ -38,6 +41,10 @@ public class City {
             default:
                 mWeatherIcon = R.drawable.ic_sun;
         }
+    }
+
+    public int getmApiID() {
+        return mApiID;
     }
 
     public String getmName() {

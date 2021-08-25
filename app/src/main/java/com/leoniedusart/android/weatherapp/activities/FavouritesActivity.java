@@ -24,13 +24,16 @@ import android.widget.EditText;
 
 import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.adapters.FavouriteAdapter;
+import com.leoniedusart.android.weatherapp.database.DataBaseHelper;
 import com.leoniedusart.android.weatherapp.models.City;
+import com.leoniedusart.android.weatherapp.models.DbCity;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     private Context mContext;
+    private DataBaseHelper mDbHelper;
     private Toolbar mToolbar;
     private CollapsingToolbarLayout mToolBarLayout;
     private FloatingActionButton mFab;
@@ -45,15 +48,22 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
         setContentView(R.layout.activity_favourites);
 
         mContext = this;
+        mDbHelper = new DataBaseHelper(mContext);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolBarLayout = findViewById(R.id.toolbar_layout);
         mToolBarLayout.setTitle(getTitle());
 
+        // init liste
+        mCities = new ArrayList<>();
+        for(DbCity dbCity : mDbHelper.findAll())
+        {
+            apiCall(mContext, getUrl(dbCity.getmIdApi()), true);
+        }
+
         // RecyclerView
         mRecyclerViewFavourites = findViewById(R.id.recycler_view_favourites_list);
-        mCities = new ArrayList<>();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
         mRecyclerViewFavourites.setLayoutManager(layoutManager);
         mAdapter = new FavouriteAdapter(mContext, mCities);
@@ -77,12 +87,14 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                     case ItemTouchHelper.LEFT:
                         int position = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
                         mCityRemoved = mCities.get(position);
+                        mDbHelper.delete(mCityRemoved.getmApiID());
                         mCities.remove(position);
                         mAdapter.notifyItemRemoved(position);
                         Snackbar.make(findViewById(R.id.coordinator_layout), String.format(getResources().getString(R.string.removed_city), mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
                                 .setAction(R.string.cancel, new View.OnClickListener(){
                                     @Override
                                     public void onClick(View view) {
+                                        mDbHelper.insert(mCityRemoved);
                                         mCities.add(position, mCityRemoved);
                                         mAdapter.notifyDataSetChanged();
                                     }
@@ -113,7 +125,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
 
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        apiCall(mContext, getUrl(editTextAddFavourite.getText().toString()));
+                        apiCall(mContext, getUrl(editTextAddFavourite.getText().toString()), false);
                     }
                 });
 
@@ -125,19 +137,24 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     }
 
     @Override
-    public void onSuccess(String stringJson) {
+    public void onSuccess(String stringJson, boolean init) {
         try {
             City city = new City(stringJson);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mCities.stream().anyMatch(c -> c.getmName().equals(city.getmName()))) {
+            if (!init && mDbHelper.cityExists(city.getmApiID())) {
                 alertUser(mContext, R.string.already_added);
             }
             else
             {
+                if(!init)
+                {
+                    mDbHelper.insert(city);
+                }
                 mCities.add(city);
                 mAdapter.notifyDataSetChanged();
             }
         } catch(Exception e)
         {
+            Log.d("LDtag", e.getMessage());
             alertUser(mContext, R.string.pb);
         }
     }
