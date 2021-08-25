@@ -2,24 +2,14 @@
 <resources>
     <string name="app_name">My Weather App</string>
     <string name="action_settings">Paramêtres</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Suivant</string>
-    <string name="previous">Précèdent</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-
     <string name="favourites">Favoris</string>
-
     <string name="no_connection">Pas de connexion internet</string>
     <string name="title_activity_favourites">Mes favoris</string>
-
     <string name="ok">OK</string>
     <string name="cancel">Annuler</string>
     <string name="pb">Une erreur est survenue, veuillez réessayer</string>
     <string name="no_internet">Pas de connexion internet</string>
     <string name="notfound">Ville inconnue, veuillez réessayer avec une autre orthographe</string>
+    <string name="add_city">Ajouter une ville</string>
     <string name="already_added">Cette ville fait déjà partie de vos favoris</string>
 </resources>

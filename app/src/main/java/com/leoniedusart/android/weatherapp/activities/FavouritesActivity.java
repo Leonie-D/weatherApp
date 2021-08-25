@@ -105,7 +105,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
             public void onClick(View view) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-                builder.setTitle("Ajouter une ville");
+                builder.setTitle(R.string.add_city);
 
                 View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_add_favourite, null);
                 final EditText editTextAddFavourite = (EditText) v.findViewById(R.id.edit_text_add_favourite);
