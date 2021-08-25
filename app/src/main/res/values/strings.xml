@@ -11,4 +11,7 @@
     <string name="notfound">City not found, please try again</string>
     <string name="add_city">Add city to favorites</string>
     <string name="already_added">City already added to favourites</string>
+    <string name="removed_city">%s removed.</string>
+    <string name="on_your_left">On the orther left...</string>
+    <string name="remove_city_question">Remove %s?</string>
 </resources>

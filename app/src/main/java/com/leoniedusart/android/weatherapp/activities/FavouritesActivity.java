@@ -79,7 +79,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                         mCityRemoved = mCities.get(position);
                         mCities.remove(position);
                         mAdapter.notifyItemRemoved(position);
-                        Snackbar.make(findViewById(R.id.coordinator_layout), String.format("%s a été supprimée.", mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
+                        Snackbar.make(findViewById(R.id.coordinator_layout), String.format(getResources().getString(R.string.removed_city), mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
                                 .setAction(R.string.cancel, new View.OnClickListener(){
                                     @Override
                                     public void onClick(View view) {
@@ -91,7 +91,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                         break;
                     case ItemTouchHelper.RIGHT:
                         mAdapter.notifyDataSetChanged();
-                        Snackbar.make(findViewById(R.id.coordinator_layout), "L'autre gauche...", Snackbar.LENGTH_SHORT)
+                        Snackbar.make(findViewById(R.id.coordinator_layout), R.string.on_your_left, Snackbar.LENGTH_SHORT)
                                 .show();
                         break;
                 }

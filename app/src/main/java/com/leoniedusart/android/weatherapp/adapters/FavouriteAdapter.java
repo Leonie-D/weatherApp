@@ -73,7 +73,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         public boolean onLongClick(View view) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-            builder.setTitle(String.format("Supprimer %s ?", ((TextView) view.findViewById(R.id.text_view_city_name)).getText().toString()));
+            builder.setTitle(String.format(mContext.getResources().getString(R.string.remove_city_question), ((TextView) view.findViewById(R.id.text_view_city_name)).getText().toString()));
 
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {

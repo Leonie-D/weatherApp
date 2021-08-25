@@ -12,4 +12,7 @@
     <string name="notfound">Ville inconnue, veuillez réessayer avec une autre orthographe</string>
     <string name="add_city">Ajouter une ville</string>
     <string name="already_added">Cette ville fait déjà partie de vos favoris</string>
+    <string name="removed_city">%s a été supprimée.</string>
+    <string name="on_your_left">L\'autre gauche...</string>
+    <string name="remove_city_question">Supprimer %s ?</string>
 </resources>
