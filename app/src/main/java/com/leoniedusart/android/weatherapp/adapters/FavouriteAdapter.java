@@ -78,7 +78,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     mCities.remove(mCityPosition);
-                    FavouriteAdapter.this.notifyDataSetChanged();
+                    notifyDataSetChanged();
                 }
             });
 

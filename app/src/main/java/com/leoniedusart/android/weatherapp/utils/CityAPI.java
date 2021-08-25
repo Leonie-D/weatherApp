@@ -11,6 +11,7 @@ import android.os.Handler;
 import com.leoniedusart.android.weatherapp.R;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -22,13 +23,14 @@ public interface CityAPI {
     OkHttpClient mOkHttpClient = new OkHttpClient();
     Handler handler = new Handler();
     String apiKey = "0de3404ffb4014065996f62bf2434b39";
+    String language = Locale.getDefault().getLanguage();
 
     default String getUrl(String cityName) {
-        return String.format("http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=fr&appid=%s", cityName, apiKey);
+        return String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=%s&appid=%s", cityName, language, apiKey);
     }
 
     default String getUrl(Double cityLat, Double cityLon) {
-        return String.format("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=fr&appid=%s", cityLat, cityLon, apiKey);
+        return String.format("https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=%s&appid=%s", cityLat, cityLon, language, apiKey);
     }
 
     default void apiCall(Context context, String url) {

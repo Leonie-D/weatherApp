@@ -78,7 +78,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                         int position = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
                         mCityRemoved = mCities.get(position);
                         mCities.remove(position);
-                        mAdapter.notifyDataSetChanged();
+                        mAdapter.notifyItemRemoved(position);
                         Snackbar.make(findViewById(R.id.coordinator_layout), String.format("%s a été supprimée.", mCityRemoved.getmName()), Snackbar.LENGTH_LONG)
                                 .setAction(R.string.cancel, new View.OnClickListener(){
                                     @Override

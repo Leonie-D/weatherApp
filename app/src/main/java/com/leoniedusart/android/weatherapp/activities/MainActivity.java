@@ -21,7 +21,7 @@ import com.leoniedusart.android.weatherapp.utils.CityAPI;
 
 import org.json.JSONException;
 
-public class MainActivity extends AppCompatActivity implements CityAPI {
+public class  MainActivity extends AppCompatActivity implements CityAPI {
 
     private Context mContext;
     private LinearLayout mLinearLayoutMain;
