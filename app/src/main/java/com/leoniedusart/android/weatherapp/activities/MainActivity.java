@@ -16,7 +16,8 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
     private TextView mTextViewCityTemp;
     private ImageView mImageViewCityIcon;
     private ImageView mImageViewRefreshBtn;
+    private City mCity;
     private static double mLat;
     private static double mLon;
     private static final int REQUEST_CODE = 30;
@@ -100,6 +102,32 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.action_location:
+                if(mCity != null){
+                    Intent intent = new Intent(mContext, MapsActivity.class);
+                    intent.putExtra("cityName", mCity.getmName());
+                    intent.putExtra("cityLat", mLat);
+                    intent.putExtra("cityLon", mLon);
+                    mContext.startActivity(intent);
+                }
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void onFavouritesBtnClick(View view)
     {
         Intent intent = new Intent(this, FavouritesActivity.class);
@@ -140,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
 
     private void renderCurrentWeather(City city)
     {
+        mCity = city;
         mProgressBar.setVisibility(View.INVISIBLE);
         mTextViewCityName = findViewById(R.id.text_view_city_name);
         mTextViewCityName.setText(city.getmName());

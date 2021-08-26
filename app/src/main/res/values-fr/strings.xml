@@ -16,4 +16,6 @@
     <string name="on_your_left">L\'autre gauche...</string>
     <string name="remove_city_question">Supprimer %s ?</string>
     <string name="permission_missing">Localisation non autorisée, impossible d\'afficher la météo</string>
+    <string name="title_activity_maps">Carte</string>
+    <string name="action_location">Localiser</string>
 </resources>
