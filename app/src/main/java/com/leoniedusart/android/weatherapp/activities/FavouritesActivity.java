@@ -74,11 +74,12 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                int fromPosition = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
-                int toPosition = ((FavouriteAdapter.ViewHolder) target).getBindingAdapterPosition();
-                Collections.swap(mCities, fromPosition, toPosition);
-                mAdapter.notifyItemMoved(fromPosition, toPosition);
-                return true;
+                //int fromPosition = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
+                //int toPosition = ((FavouriteAdapter.ViewHolder) target).getBindingAdapterPosition();
+                //Collections.swap(mCities, fromPosition, toPosition);
+                //mAdapter.notifyItemMoved(fromPosition, toPosition);
+                //return true;
+                return false;
             }
 
             @Override

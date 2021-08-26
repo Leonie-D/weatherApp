@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MyWeatherDB";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 7;
     private static final String TABLE_CITY = "City";
     private static final String KEY_ID = "city_id";
     private static final String KEY_API_ID = "city_api_id";

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import org.json.JSONException;
 public class MainActivity extends AppCompatActivity implements CityAPI {
 
     private Context mContext;
+    private ProgressBar mProgressBar;
     private LinearLayout mLinearLayoutMain;
     private TextView mTextViewCityName;
     private TextView mTextViewCityDesc;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
 
         mLinearLayoutMain = findViewById(R.id.linear_layout_main);
         mImageViewRefreshBtn = findViewById(R.id.image_view_refresh_btn);
+        mProgressBar = findViewById(R.id.indeterminateBar);
 
         ConnectivityManager connMng = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
@@ -64,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
             mLocationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(@NonNull Location location) {
-                    Log.d("LDtag", "truc");
                     mLat = location.getLatitude();
                     mLon = location.getLongitude();
 
@@ -73,15 +75,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
                     mLocationManager.removeUpdates(this);
                 }
             };
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE);
-            } else {
-                mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-            }
-
-            Log.d("LDtag", String.valueOf(mLat));
-            //apiCall(mContext, getUrl(mLat, mLon), false);
+            getLocation();
         }
         else
         {
@@ -96,9 +90,9 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         switch (requestCode) {
             case REQUEST_CODE:
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("LDtag", "plouf");
+                    getLocation();
                 } else {
-                    Log.d("LDtag", "pouet");
+                    Toast.makeText(mContext, R.string.permission_missing, Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
@@ -127,8 +121,26 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         }
     }
 
+    private void getLocation()
+    {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        } else {
+            mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+            {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+            }
+            else
+            {
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+            }
+        }
+    }
+
     private void renderCurrentWeather(City city)
     {
+        mProgressBar.setVisibility(View.INVISIBLE);
         mTextViewCityName = findViewById(R.id.text_view_city_name);
         mTextViewCityName.setText(city.getmName());
         mTextViewCityDesc = findViewById(R.id.text_view_city_desc);

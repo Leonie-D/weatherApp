@@ -15,4 +15,5 @@
     <string name="removed_city">%s a été supprimée.</string>
     <string name="on_your_left">L\'autre gauche...</string>
     <string name="remove_city_question">Supprimer %s ?</string>
+    <string name="permission_missing">Localisation non autorisée, impossible d\'afficher la météo</string>
 </resources>

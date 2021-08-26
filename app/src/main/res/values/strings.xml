@@ -14,4 +14,5 @@
     <string name="removed_city">%s removed.</string>
     <string name="on_your_left">On the orther left...</string>
     <string name="remove_city_question">Remove %s?</string>
+    <string name="permission_missing">Location permission missing, enable to show weather</string>
 </resources>
