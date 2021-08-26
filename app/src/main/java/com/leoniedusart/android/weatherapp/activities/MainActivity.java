@@ -1,14 +1,22 @@
 package com.leoniedusart.android.weatherapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,7 +29,7 @@ import com.leoniedusart.android.weatherapp.utils.CityAPI;
 
 import org.json.JSONException;
 
-public class  MainActivity extends AppCompatActivity implements CityAPI {
+public class MainActivity extends AppCompatActivity implements CityAPI {
 
     private Context mContext;
     private LinearLayout mLinearLayoutMain;
@@ -30,8 +38,11 @@ public class  MainActivity extends AppCompatActivity implements CityAPI {
     private TextView mTextViewCityTemp;
     private ImageView mImageViewCityIcon;
     private ImageView mImageViewRefreshBtn;
-    private static final double lat = 40.716709;
-    private static final double lon = -74.005698;
+    private static double mLat;
+    private static double mLon;
+    private static final int REQUEST_CODE = 30;
+    private LocationManager mLocationManager;
+    private LocationListener mLocationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,24 +51,58 @@ public class  MainActivity extends AppCompatActivity implements CityAPI {
 
         mContext = this;
 
-        ConnectivityManager connMng = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
-
         mLinearLayoutMain = findViewById(R.id.linear_layout_main);
         mImageViewRefreshBtn = findViewById(R.id.image_view_refresh_btn);
 
-        if(networkInfo != null && networkInfo.isConnected())
-        {
+        ConnectivityManager connMng = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
             mImageViewRefreshBtn.setVisibility(View.INVISIBLE);
             mLinearLayoutMain.setVisibility(View.VISIBLE);
 
-            apiCall(mContext, getUrl(lat, lon), false);
+            mLocationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(@NonNull Location location) {
+                    Log.d("LDtag", "truc");
+                    mLat = location.getLatitude();
+                    mLon = location.getLongitude();
+
+                    apiCall(mContext, getUrl(mLat, mLon), false);
+
+                    mLocationManager.removeUpdates(this);
+                }
+            };
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_CODE);
+            } else {
+                mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+            }
+
+            Log.d("LDtag", String.valueOf(mLat));
+            //apiCall(mContext, getUrl(mLat, mLon), false);
         }
         else
         {
             mImageViewRefreshBtn.setVisibility(View.VISIBLE);
             mLinearLayoutMain.setVisibility(View.INVISIBLE);
             Toast.makeText(this, R.string.no_connection, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("LDtag", "plouf");
+                } else {
+                    Log.d("LDtag", "pouet");
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
