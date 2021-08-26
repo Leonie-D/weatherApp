@@ -10,13 +10,17 @@ public class City {
     private final String mName;
     private final String mDesc;
     private final String mTemp;
+    private final Double mLat;
+    private final Double mLon;
     private final int mWeatherIcon;
 
-    public City(int mApiId, String mName, String mDesc, String mTemp, int mWeatherIcon) {
+    public City(int mApiId, String mName, String mDesc, String mTemp, Double mLat, Double mLon, int mWeatherIcon) {
         this.mApiID = mApiId;
         this.mName = mName;
         this.mDesc = mDesc;
         this.mTemp = mTemp;
+        this.mLat = mLat;
+        this.mLon = mLon;
         this.mWeatherIcon = mWeatherIcon;
     }
 
@@ -26,6 +30,8 @@ public class City {
         mName = json.getString("name");
         mDesc = json.getJSONArray("weather").getJSONObject(0).getString("description");
         mTemp = String.format("%d°C", Math.round(json.getJSONObject("main").getDouble("temp")));
+        mLat = json.getJSONObject("coord").getDouble("lat");
+        mLon = json.getJSONObject("coord").getDouble("lon");
         switch (json.getJSONArray("weather").getJSONObject(0).getString("main")) {
             case "Clouds":
                 if(mDesc.equals("peu nuageux")) {
@@ -61,5 +67,13 @@ public class City {
 
     public int getmWeatherIcon() {
         return mWeatherIcon;
+    }
+
+    public Double getmLat() {
+        return mLat;
+    }
+
+    public Double getmLon() {
+        return mLon;
     }
 }
