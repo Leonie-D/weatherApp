@@ -51,7 +51,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         // +1 sur tous les order supp
-        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " > " + order, null);
+        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + ", " + KEY_ORDER + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " >= " + order, null);
         if(cursor.moveToFirst())
         {
             while(!cursor.isAfterLast())
@@ -148,7 +148,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             int city1Id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
 
             if(cityOrder1 < cityOrder2) {
-                Cursor cursor2 = db.rawQuery("SELECT " + KEY_ID + ", " + KEY_ORDER + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " <= " + cityOrder2 + " AND " + KEY_ID + " != " + city1Id, null);
+                Cursor cursor2 = db.rawQuery("SELECT " + KEY_ID + ", " + KEY_ORDER + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " <= " + cityOrder2 + " AND " + KEY_ORDER + " > " + cityOrder1 + " AND " + KEY_ID + " != " + city1Id, null);
 
                 if(cursor2.moveToFirst())
                 {
@@ -165,7 +165,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
             else
             {
-                Cursor cursor2 = db.rawQuery("SELECT " + KEY_ID + ", " + KEY_ORDER + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " >= " + cityOrder2 + " AND " + KEY_ID + " != " + city1Id, null);
+                Cursor cursor2 = db.rawQuery("SELECT " + KEY_ID + ", " + KEY_ORDER + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " >= " + cityOrder2 + " AND " + KEY_ORDER + " < " + cityOrder1 + " AND " + KEY_ID + " != " + city1Id, null);
 
                 if(cursor2.moveToFirst())
                 {
