@@ -108,7 +108,8 @@ public class WeatherAppWidget extends AppWidgetProvider implements CityAPI {
     private void getLocation()
     {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // ??
+            // intent vers la main activity (pour demander les permissions)
+            // voir : start activity for result pour que le widget enchaine sur le traitement
         } else {
             mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
             if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
