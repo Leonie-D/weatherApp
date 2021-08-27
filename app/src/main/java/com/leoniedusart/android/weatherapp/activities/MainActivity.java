@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLocation();
                 } else {
+                    // On pourrait aussi demander de renseigner un nom de ville pour afficher la météo de cette ville
                     Toast.makeText(mContext, R.string.permission_missing, Toast.LENGTH_SHORT).show();
                 }
                 break;
