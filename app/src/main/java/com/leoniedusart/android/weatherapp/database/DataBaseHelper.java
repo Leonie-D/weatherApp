@@ -137,9 +137,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public void swap(int cityOrder1, int cityOrder2)
     {
-        Log.d("LDtag", String.valueOf(cityOrder1));
-        Log.d("LDtag", String.valueOf(cityOrder2));
-
         SQLiteDatabase db = getWritableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT " + KEY_ID + " FROM " + TABLE_CITY + " WHERE " + KEY_ORDER + " = " + cityOrder1, null);

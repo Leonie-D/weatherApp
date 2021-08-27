@@ -16,6 +16,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.leoniedusart.android.weatherapp.R;
 import com.leoniedusart.android.weatherapp.models.City;
+import com.leoniedusart.android.weatherapp.models.Weather;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
 
 import org.json.JSONException;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
                     mLon = location.getLongitude();
 
                     // si les coordonnées sont mise à jour, appel API pour actualiser météo locale
-                    apiCall(mContext, getUrl(mContext, mLat, mLon), false);
+                    apiCall(mContext, getUrl(mContext, mLat, mLon), true);
 
                     mLocationManager.removeUpdates(this);
                 }
@@ -144,8 +146,18 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
     @Override
     public void onSuccess(String stringJson, boolean init) {
         try {
-            City city = new City(stringJson);
-            renderCurrentWeather(city);
+            if(init)
+            {
+                City city = new City(stringJson);
+                renderCurrentWeather(city);
+                Log.d("LDtag", String.valueOf(city.getmApiID()));
+                apiCall(mContext, getUrl(mContext, city.getmApiID(), true), false);
+            }
+            else
+            {
+                City city = new City(stringJson, true);
+                renderForecasting(city);
+            }
         } catch (JSONException e) {
             alertUser(mContext, R.string.pb);
         }
@@ -188,5 +200,18 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         mImageViewCityIcon = findViewById(R.id.image_view_icon);
         Drawable icon = ResourcesCompat.getDrawable(mContext.getResources(), city.getmWeatherIcon(), mContext.getTheme());
         mImageViewCityIcon.setImageDrawable(icon);
+    }
+
+    private void renderForecasting(City city)
+    {
+        ((TextView) findViewById(R.id.text_view_city_desc_f1)).setText(city.getmForecast().get(0).getmDesc());
+        ((TextView) findViewById(R.id.text_view_city_desc_f2)).setText(city.getmForecast().get(1).getmDesc());
+        ((TextView) findViewById(R.id.text_view_city_desc_f3)).setText(city.getmForecast().get(2).getmDesc());
+        ((TextView) findViewById(R.id.text_view_city_desc_f4)).setText(city.getmForecast().get(3).getmDesc());
+
+        ((TextView) findViewById(R.id.text_view_city_temp_f1)).setText(city.getmForecast().get(0).getmTemp());
+        ((TextView) findViewById(R.id.text_view_city_temp_f2)).setText(city.getmForecast().get(1).getmTemp());
+        ((TextView) findViewById(R.id.text_view_city_temp_f3)).setText(city.getmForecast().get(2).getmTemp());
+        ((TextView) findViewById(R.id.text_view_city_temp_f4)).setText(city.getmForecast().get(3).getmTemp());
     }
 }

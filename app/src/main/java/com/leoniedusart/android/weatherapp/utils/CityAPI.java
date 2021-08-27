@@ -24,10 +24,18 @@ public interface CityAPI {
     OkHttpClient mOkHttpClient = new OkHttpClient();
     Handler handler = new Handler();
     int apiKey = R.string.weather_api_key;
+    int peterApiKey = R.string.peter_api_key;
     String lang = Locale.getDefault().getLanguage();
 
-    default String getUrl(Context context, int cityId) {
-        return String.format("https://api.openweathermap.org/data/2.5/weather?id=%d&units=metric&lang=%s&appid=%s", cityId, lang, context.getResources().getString(apiKey));
+    default String getUrl(Context context, int cityId, boolean withForcasting) {
+        if(withForcasting)
+        {
+            return String.format("https://api.openweathermap.org/data/2.5/forecast/daily?id=%d&cnt=4&units=metric&lang=%s&appid=%s", cityId, lang, context.getResources().getString(peterApiKey));
+        }
+        else
+        {
+            return String.format("https://api.openweathermap.org/data/2.5/weather?id=%d&units=metric&lang=%s&appid=%s", cityId, lang, context.getResources().getString(apiKey));
+        }
     }
 
     default String getUrl(Context context, String cityName) {
@@ -62,9 +70,11 @@ public interface CityAPI {
                             }
                         });
                     } else {
+                        final String msg = response.body().string();
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
+                                Log.d("LDtag", msg);
                                 alertUser(context, R.string.notfound);
                             }
                         });

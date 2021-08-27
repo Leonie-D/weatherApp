@@ -2,8 +2,11 @@ package com.leoniedusart.android.weatherapp.models;
 
 import com.leoniedusart.android.weatherapp.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class City {
     private final int mApiID;
@@ -13,6 +16,7 @@ public class City {
     private final Double mLat;
     private final Double mLon;
     private final int mWeatherIcon;
+    private final ArrayList<Weather> mForecast = new ArrayList<>();
 
     public City(int mApiId, String mName, String mDesc, String mTemp, Double mLat, Double mLon, int mWeatherIcon) {
         this.mApiID = mApiId;
@@ -49,6 +53,22 @@ public class City {
         }
     }
 
+    public City(String stringJson, boolean withForecasting) throws JSONException {
+        JSONObject json = new JSONObject(stringJson);
+        mName = json.getJSONObject("city").getString("name");
+        mApiID= json.getJSONObject("city").getInt("id");
+        mDesc = "";
+        mTemp = "";
+        mLat = json.getJSONObject("city").getJSONObject("coord").getDouble("lat");
+        mLon = json.getJSONObject("city").getJSONObject("coord").getDouble("lon");
+        mWeatherIcon = 0;
+        JSONArray forecast = json.getJSONArray("list");
+        for(int i = 0; i < forecast.length(); i++)
+        {
+            mForecast.add(new Weather(forecast.getJSONObject(i)));
+        }
+    }
+
     public int getmApiID() {
         return mApiID;
     }
@@ -75,5 +95,9 @@ public class City {
 
     public Double getmLon() {
         return mLon;
+    }
+
+    public ArrayList<Weather> getmForecast() {
+        return mForecast;
     }
 }

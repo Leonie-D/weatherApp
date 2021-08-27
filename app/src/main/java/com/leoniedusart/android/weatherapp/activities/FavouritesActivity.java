@@ -62,7 +62,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
         {
             City city = new City(dbCity.getmIdApi(), dbCity.getmName(), null, null, 0.0, 0.0, 0);
             mCities.add(city);
-            apiCall(mContext, getUrl(mContext, dbCity.getmIdApi()), true);
+            apiCall(mContext, getUrl(mContext, dbCity.getmIdApi(), false), true);
         }
 
         // RecyclerView
@@ -157,12 +157,13 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                 }
                 else
                 {
-                    try {
-                        Log.d("LDtag", city.getmName() + " : " + cityOrder);
-                        mCities.set(cityOrder, city);
-                    } catch (IndexOutOfBoundsException e)
+                    try
                     {
-                        Log.d("LDtag", "ouch");
+                        mCities.set(cityOrder, city);
+                    }
+                    catch (IndexOutOfBoundsException e)
+                    {
+                        Log.d("LDtag", "oups");
                     }
                 }
                 mAdapter.notifyDataSetChanged();
