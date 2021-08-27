@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.leoniedusart.android.weatherapp.R;
+import com.leoniedusart.android.weatherapp.activities.MainActivity;
 import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
 
@@ -63,6 +64,10 @@ public class WeatherAppWidget extends AppWidgetProvider implements CityAPI {
             views.setTextViewText(R.id.text_view_city_name, context.getResources().getString(R.string.no_connection));
             views.setViewVisibility(R.id.image_view_refresh_btn, View.VISIBLE);
         }
+
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        views.setOnClickPendingIntent(R.id.widget_main, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
