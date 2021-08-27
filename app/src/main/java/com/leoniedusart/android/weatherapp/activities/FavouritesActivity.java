@@ -29,6 +29,7 @@ import com.leoniedusart.android.weatherapp.models.City;
 import com.leoniedusart.android.weatherapp.models.DbCity;
 import com.leoniedusart.android.weatherapp.utils.CityAPI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class FavouritesActivity extends AppCompatActivity implements CityAPI {
@@ -59,7 +60,9 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
         mCities = new ArrayList<>();
         for(DbCity dbCity : mDbHelper.findAll())
         {
-            apiCall(mContext, getUrl(dbCity.getmIdApi()), true);
+            City city = new City(dbCity.getmIdApi(), dbCity.getmName(), null, null, 0.0, 0.0, 0);
+            mCities.add(city);
+            apiCall(mContext, getUrl(mContext, dbCity.getmIdApi()), true);
         }
 
         // RecyclerView
@@ -74,12 +77,12 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                //int fromPosition = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
-                //int toPosition = ((FavouriteAdapter.ViewHolder) target).getBindingAdapterPosition();
-                //Collections.swap(mCities, fromPosition, toPosition);
-                //mAdapter.notifyItemMoved(fromPosition, toPosition);
-                //return true;
-                return false;
+                int fromPosition = ((FavouriteAdapter.ViewHolder) viewHolder).getBindingAdapterPosition();
+                int toPosition = ((FavouriteAdapter.ViewHolder) target).getBindingAdapterPosition();
+                Collections.swap(mCities, fromPosition, toPosition);
+                mDbHelper.swap(fromPosition, toPosition);
+                mAdapter.notifyItemMoved(fromPosition, toPosition);
+                return true;
             }
 
             @Override
@@ -95,7 +98,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
                                 .setAction(R.string.cancel, new View.OnClickListener(){
                                     @Override
                                     public void onClick(View view) {
-                                        mDbHelper.insert(mCityRemoved);
+                                        mDbHelper.insert(mCityRemoved, position);
                                         mCities.add(position, mCityRemoved);
                                         mAdapter.notifyDataSetChanged();
                                     }
@@ -126,7 +129,7 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
 
                 builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        apiCall(mContext, getUrl(editTextAddFavourite.getText().toString()), false);
+                        apiCall(mContext, getUrl(mContext, editTextAddFavourite.getText().toString()), false);
                     }
                 });
 
@@ -141,21 +144,31 @@ public class FavouritesActivity extends AppCompatActivity implements CityAPI {
     public void onSuccess(String stringJson, boolean init) {
         try {
             City city = new City(stringJson);
-            if (!init && mDbHelper.cityExists(city.getmApiID())) {
+            int cityOrder = mDbHelper.cityExists(city.getmApiID());
+            if (!init && cityOrder >= 0) {
                 alertUser(mContext, R.string.already_added);
             }
             else
             {
                 if(!init)
                 {
-                    mDbHelper.insert(city);
+                    mDbHelper.insert(city, mCities.size());
+                    mCities.add(city);
                 }
-                mCities.add(city);
+                else
+                {
+                    try {
+                        Log.d("LDtag", city.getmName() + " : " + cityOrder);
+                        mCities.set(cityOrder, city);
+                    } catch (IndexOutOfBoundsException e)
+                    {
+                        Log.d("LDtag", "ouch");
+                    }
+                }
                 mAdapter.notifyDataSetChanged();
             }
         } catch(Exception e)
         {
-            Log.d("LDtag", e.getMessage());
             alertUser(mContext, R.string.pb);
         }
     }

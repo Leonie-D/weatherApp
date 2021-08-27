@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         ConnectivityManager connMng = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMng.getActiveNetworkInfo();
 
+        // Si accès internet, on cherche à actualiser la géoloc pour appeler l'API météo
         if (networkInfo != null && networkInfo.isConnected()) {
             mImageViewRefreshBtn.setVisibility(View.INVISIBLE);
             mLinearLayoutMain.setVisibility(View.VISIBLE);
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
                     mLat = location.getLatitude();
                     mLon = location.getLongitude();
 
-                    apiCall(mContext, getUrl(mLat, mLon), false);
+                    // si les coordonnées sont mise à jour, appel API pour actualiser météo locale
+                    apiCall(mContext, getUrl(mContext, mLat, mLon), false);
 
                     mLocationManager.removeUpdates(this);
                 }
@@ -149,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         }
     }
 
+    /**
+     * Si permissions activées, requiert la mise à jour de la localisation
+     */
     private void getLocation()
     {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -166,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements CityAPI {
         }
     }
 
+    /**
+     * Mise à jour de l'ui
+     * @param city
+     */
     private void renderCurrentWeather(City city)
     {
         mCity = city;

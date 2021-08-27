@@ -23,19 +23,19 @@ import okhttp3.Response;
 public interface CityAPI {
     OkHttpClient mOkHttpClient = new OkHttpClient();
     Handler handler = new Handler();
-    String apiKey = "0de3404ffb4014065996f62bf2434b39";
+    int apiKey = R.string.weather_api_key;
     String lang = Locale.getDefault().getLanguage();
 
-    default String getUrl(int cityId) {
-        return String.format("https://api.openweathermap.org/data/2.5/weather?id=%d&units=metric&lang=%s&appid=%s", cityId, lang, apiKey);
+    default String getUrl(Context context, int cityId) {
+        return String.format("https://api.openweathermap.org/data/2.5/weather?id=%d&units=metric&lang=%s&appid=%s", cityId, lang, context.getResources().getString(apiKey));
     }
 
-    default String getUrl(String cityName) {
-        return String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=%s&appid=%s", cityName, lang, apiKey);
+    default String getUrl(Context context, String cityName) {
+        return String.format("https://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=%s&appid=%s", cityName, lang, context.getResources().getString(apiKey));
     }
 
-    default String getUrl(Double cityLat, Double cityLon) {
-        return String.format("https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=%s&appid=%s", cityLat, cityLon, lang, apiKey);
+    default String getUrl(Context context, Double cityLat, Double cityLon) {
+        return String.format("https://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=metric&lang=%s&appid=%s", cityLat, cityLon, lang, context.getResources().getString(apiKey));
     }
 
     default void apiCall(Context context, String url, boolean init) {

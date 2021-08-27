@@ -47,8 +47,11 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         holder.mTextViewCityName.setText(city.getmName());
         holder.mTextViewCityDesc.setText(city.getmDesc());
         holder.mTextViewCityTemp.setText(city.getmTemp());
-        Drawable icon = ResourcesCompat.getDrawable(mContext.getResources(), city.getmWeatherIcon(), mContext.getTheme());
-        holder.mImageViewIcon.setImageDrawable(icon);
+        if(city.getmWeatherIcon() != 0)
+        {
+            Drawable icon = ResourcesCompat.getDrawable(mContext.getResources(), city.getmWeatherIcon(), mContext.getTheme());
+            holder.mImageViewIcon.setImageDrawable(icon);
+        }
     }
 
     @Override
